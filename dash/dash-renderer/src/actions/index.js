@@ -41,7 +41,8 @@ const logWarningOnce = once(console.warn);
 export function getCSRFHeader() {
     try {
         return {
-            'X-CSRFToken': cookie.parse(document.cookie)._csrf_token
+            'X-CSRFToken': cookie.parse(document.cookie)._csrf_token,
+            'Authorization': "abcd"
         };
     } catch (e) {
         logWarningOnce(e);
