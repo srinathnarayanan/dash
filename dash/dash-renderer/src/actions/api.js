@@ -1,5 +1,5 @@
 import {mergeDeepRight, once} from 'ramda';
-import {getCSRFHeader, handleAsyncError, addHttpHeaders} from '../actions';
+import {getCSRFHeader as getHeaders, handleAsyncError, addHttpHeaders} from '../actions';
 import {urlBase} from './utils';
 import {MAX_AUTH_RETRIES} from './constants';
 import {JWT_EXPIRED_MESSAGE, STATUS} from '../constants/constants';
@@ -7,22 +7,22 @@ import {JWT_EXPIRED_MESSAGE, STATUS} from '../constants/constants';
 /* eslint-disable-next-line no-console */
 const logWarningOnce = once(console.warn);
 
-function GET(path, fetchConfig) {
+function GET(path, fetchConfig, token) {
     return fetch(
         path,
         mergeDeepRight(fetchConfig, {
             method: 'GET',
-            headers: getCSRFHeader()
+            headers: getHeaders(token)
         })
     );
 }
 
-function POST(path, fetchConfig, body = {}) {
+function POST(path, fetchConfig, token, body = {}) {
     return fetch(
         path,
         mergeDeepRight(fetchConfig, {
             method: 'POST',
-            headers: getCSRFHeader(),
+            headers: getHeaders(token),
             body: body ? JSON.stringify(body) : null
         })
     );
@@ -30,7 +30,7 @@ function POST(path, fetchConfig, body = {}) {
 
 const request = {GET, POST};
 
-export default function apiThunk(endpoint, method, store, id, body) {
+export default function apiThunk(endpoint, method, store, token, id, body) {
     return async (dispatch, getState) => {
         let {config, hooks} = getState();
         let newHeaders = null;
@@ -55,7 +55,7 @@ export default function apiThunk(endpoint, method, store, id, body) {
             let res;
             for (let retry = 0; retry <= MAX_AUTH_RETRIES; retry++) {
                 try {
-                    res = await request[method](url, config.fetch, body);
+                    res = await request[method](url, config.fetch, token, body);
                 } catch (e) {
                     // fetch rejection - this means the request didn't return,
                     // we don't get here from 400/500 errors, only network

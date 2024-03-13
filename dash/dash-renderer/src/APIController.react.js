@@ -133,7 +133,8 @@ function storeEffect(props, events, setErrorLoading) {
         graphs,
         hooks,
         layout,
-        layoutRequest
+        layoutRequest,
+        token
     } = props;
 
     batch(() => {
@@ -141,7 +142,7 @@ function storeEffect(props, events, setErrorLoading) {
             if (typeof hooks.layout_pre === 'function') {
                 hooks.layout_pre();
             }
-            dispatch(apiThunk('_dash-layout', 'GET', 'layoutRequest'));
+            dispatch(apiThunk('_dash-layout', 'GET', 'layoutRequest', token));
         } else if (layoutRequest.status === STATUS.OK) {
             if (isEmpty(layout)) {
                 if (typeof hooks.layout_post === 'function') {
@@ -162,7 +163,7 @@ function storeEffect(props, events, setErrorLoading) {
 
         if (isEmpty(dependenciesRequest)) {
             dispatch(
-                apiThunk('_dash-dependencies', 'GET', 'dependenciesRequest')
+                apiThunk('_dash-dependencies', 'GET', 'dependenciesRequest', token)
             );
         } else if (
             dependenciesRequest.status === STATUS.OK &&

@@ -38,11 +38,11 @@ export function hydrateInitialOutputs() {
 /* eslint-disable-next-line no-console */
 const logWarningOnce = once(console.warn);
 
-export function getCSRFHeader() {
+export function getCSRFHeader(token) {
     try {
         return {
             'X-CSRFToken': cookie.parse(document.cookie)._csrf_token,
-            'Authorization': "abcd"
+            Authorization: `Bearer ${token}`
         };
     } catch (e) {
         logWarningOnce(e);

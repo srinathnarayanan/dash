@@ -171,14 +171,14 @@ class Reloader extends React.Component {
     }
 
     componentDidMount() {
-        const {dispatch, reloadRequest} = this.props;
+        const {dispatch, reloadRequest, token} = this.props;
         const {disabled, interval} = this.state;
         if (!disabled && !this.state.intervalId) {
             const intervalId = window.setInterval(() => {
                 // Prevent requests from piling up - reloading can take
                 // many seconds (10-30) and the interval is 3s by default
                 if (reloadRequest.status !== 'loading') {
-                    dispatch(apiThunk('_reload-hash', 'GET', 'reloadRequest'));
+                    dispatch(apiThunk('_reload-hash', 'GET', 'reloadRequest', token));
                 }
             }, interval);
             this.setState({intervalId});

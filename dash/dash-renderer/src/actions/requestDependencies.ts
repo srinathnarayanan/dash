@@ -5,10 +5,10 @@ import apiThunk from './api';
 export function requestDependencies() {
     return (dispatch: any, getState: any) => {
         batch(() => {
-            const {graphs} = getState();
+            const {graphs, token} = getState();
             dispatch(setGraphs({...graphs, reset: true}));
             dispatch(
-                apiThunk('_dash-dependencies', 'GET', 'dependenciesRequest')
+                apiThunk('_dash-dependencies', 'GET', 'dependenciesRequest', token)
             );
         });
     };

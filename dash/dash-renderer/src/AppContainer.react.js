@@ -58,12 +58,13 @@ class UnconnectedAppContainer extends React.Component {
             return <div className='_dash-loading'>Loading...</div>;
         }
         const {show_undo_redo} = config;
+        const token = window.location.search.replaceAll('?token=', '')
         return (
             <React.Fragment>
                 {show_undo_redo ? <Toolbar /> : null}
-                <APIController />
+                <APIController token={token}/>
                 <Loading />
-                <Reloader />
+                <Reloader token={token}/>
             </React.Fragment>
         );
     }
